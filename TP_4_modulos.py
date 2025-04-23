@@ -57,6 +57,20 @@ def dinucleotide_shuffle(one_hot_sequence):
     
     return one_hot_encoding(shuffled_sequence_str)
 
+def mutation(one_hot_sequence, n_mutations = 100):
+    nucleotide_map = ['A', 'C', 'G', 'T']
+    choices = {nt: [x for x in nucleotide_map if x != nt] for nt in nucleotide_map}
+    seq_len = one_hot_sequence.shape[1]
+    decoded_sequence = ''.join([nucleotide_map[np.argmax(one_hot_sequence[:, i])] for i in range(seq_len)])
+
+    mutation_indices = np.random.choice(seq_len, size=n_mutations, replace=False)
+
+    mutated_sequence = ''.join([
+        np.random.choice(choices[nt]) if i in mutation_indices else nt
+        for i, nt in enumerate(decoded_sequence)
+    ])
+
+    return one_hot_encoding(mutated_sequence)
 
 def read_fasta_as_list(file_path):
     sequences = []
